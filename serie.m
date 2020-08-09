@@ -1,32 +1,19 @@
-
-function T = serie (P1, P2, alpha, beta,k,j)
-
-format long;
-A = P1/200;
-B = P2/2000;
-
-s1 = 0;
-s2 = 0;
-
-for i1 =1:k;
-  for h1 =1:i1; 
-    ak=1;
-    ak *= A/h1;
+function T = serie (P1, P2, alpha, beta, k, j, format="double")
+  # Vamos a reutilizar la subserie en ambos términos
+  #   Los términos factoriales y exponenciales se van de rango rápidamente si
+  # los calculamos independientemente pero pueden cancelarse. Por eso vamos a
+  # implementar cada subtérmino de la serie como un producto del término
+  # anterior, arrancando desde un término inicial
+  function s = subserie(P, n)
+    # Memoizamos (P^2)/4 y aprovechamos para castearlo al tipo deseado
+    P_2_4 = feval(format, P * P / 4);
+    # Primer término s_0
+    a_k = P_2_4 / 2;
+    s = a_k;
+    for k = 1:n
+      a_k *= -P_2_4 / (k * (k + 2));
+      s += a_k;
+    end
   end
-  
-  s1 += (-1).^(i1-1) *ak.^2*(i1/(i1+1)); 
-end
-
-for i2 =1:j;
-  for h2 =1:i2; 
-    bk=1;
-    bk *= B/h2;
-  end
-  s2 += (-1).^(i2-1) *bk.^2*(i2/(i2+1));
-end
-
-s1;
-s2;
-T = alpha*s1 + beta*s2;
-
+  T = alpha * subserie(P1, k) + beta * subserie(P2, j);
 end
