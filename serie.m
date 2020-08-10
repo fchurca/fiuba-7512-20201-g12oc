@@ -5,15 +5,22 @@ function T = serie (P1, P2, alpha, beta, k, j, format="double")
   # implementar cada subtérmino de la serie como un producto del término
   # anterior, arrancando desde un término inicial
   function s = subserie(P, n)
+    if (format == "double")
+      g = @(x) x;
+    elseif (format == "single")
+      g = @(x) redondeo(x, 23, 2, true);
+    else
+      error("Unrecognized format! Must be \"single\" or \"double\"");
+    end
     # Memoizamos (P^2)/4 y aprovechamos para castearlo al tipo deseado
-    P_2_4 = feval(format, P * P / 4);
+    P_2_4 = g(g(P * P) / 4);
     # Primer término s_0
-    a_k = P_2_4 / 2;
+    a_k = g(P_2_4 / 2);
     s = a_k;
     for k = 1:n
-      a_k *= -P_2_4 / (k * (k + 2));
-      s += a_k;
+      a_k = g(a_k*-g(P_2_4 / g(k * g(k + 2))));
+      s = g(s + a_k);
     end
   end
-  T = alpha * subserie(P1, k) + beta * subserie(P2, j);
+  T = g(g(alpha * subserie(P1, k)) + g(beta * subserie(P2, j)));
 end
