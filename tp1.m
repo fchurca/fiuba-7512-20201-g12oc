@@ -12,19 +12,4 @@ function tp1()
   m = mn(1)
   n = mn(2)
   tp1_3(m, n, P1, P2, alpha, beta, r);
-  T_e = t_estabilidad(P1, P2, alpha, beta, m, n);
-  if(isnan(T_e))
-    T_e = NaN;
-    P1 *= 10;
-    P2 *= 10;
-    do
-      P1 /= 10
-      P2 /= 10
-      mn = tp1_2(P1, P2);
-      m = mn(1)
-      n = mn(2)
-      T_e = t_estabilidad(P1, P2, alpha, beta, m, n)
-    until (!isnan(T_e))
-    tp1_3(m, n, P1, P2, alpha, beta, r);
-  end
 end

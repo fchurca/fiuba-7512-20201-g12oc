@@ -11,7 +11,6 @@ function c_p = condicion_problema(P1, P2, alpha, beta, m, n)
     d_x = NaN;
     df_dx = NaN;
     do
-      d_i /= 10;
       d_x_i = x .* d_i;
       x_i = x + d_x_i;
       c_p = c_p_i;
@@ -25,12 +24,14 @@ function c_p = condicion_problema(P1, P2, alpha, beta, m, n)
       table = [table;d_x(k),df_dx,c_p_i];
       c_p_t = [c_p_t; c_p_i];
       i++;
+      d_i /= 10;
     until (df_dx_i == 0)
   end
   plotsize = [2, 2];
   function newplot(pos, newtable, newtitle)
     subplot(plotsize(1), plotsize(2), pos)
-    plot(newtable(:,3), "*")
+    t=newtable(:,3);
+    plot([0:size(t)-1],t, "*")
     title(newtitle)
     ylabel("~C_P")
     xlabel("i\nd = 10^{(-i)}")
@@ -60,5 +61,6 @@ function c_p = condicion_problema(P1, P2, alpha, beta, m, n)
   newplot(4, table_b_d, "C_{p b^+}")
   format
   print("c_p.png")
-  c_p = norm([cpai, cpad], inf) + norm([cpbi, cpbd], inf);
+  c_p_v = [norm([cpai, cpad], inf), norm([cpbi, cpbd], inf)]
+  c_p = sum(c_p_v)
 end
