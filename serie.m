@@ -13,7 +13,7 @@ function T = serie (P1, P2, alpha, beta, k, j, format="double")
       error("Unrecognized format! Must be \"single\" or \"double\"");
     end
     # Memoizamos (P^2)/4 y aprovechamos para castearlo al tipo deseado
-    P_2_4 = g(g(P * P) / 4);
+    P_2_4 = g(g(double(P * P)) / 4);
     # Primer término s_0
     a_k = g(P_2_4 / 2);
     s = a_k;
