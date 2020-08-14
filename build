@@ -1,0 +1,38 @@
+#! /usr/bin/env sh
+
+OLD_PWD="${PWD}"
+TEMP_DIR=$(mktemp -d)
+
+BASE="TP1-2020-91352-102410"
+BASE_DIR="${TEMP_DIR}/${BASE}"
+
+CODIGO_DIR="${BASE_DIR}/codigo"
+INFORME_DIR="${BASE_DIR}/informe"
+ZIPFILE="${BASE}.zip"
+
+echo "Setting up directories..."
+mkdir -p "${CODIGO_DIR}"
+mkdir -p "${INFORME_DIR}"
+
+echo "Copying static files..."
+cp *.m "${CODIGO_DIR}/"
+cp 'Ejecución.txt' "${CODIGO_DIR}"
+cp 'An_lisis_Num_rico_I___TP1.pdf' "${INFORME_DIR}/${BASE}-Informe.pdf"
+
+echo "Generating results..."
+octave tp1.m > resultados.txt
+cp 'resultados.txt' "${CODIGO_DIR}"
+
+cd "${INFORME_DIR}"
+echo "Splitting report..."
+convert -alpha remove -density 200 "${BASE}-Informe.pdf" "${BASE}-Informe_p%02d.jpg"
+
+cd "${TEMP_DIR}"
+echo "Zipping..."
+zip -r "${ZIPFILE}" "${BASE}"
+
+cd "${OLD_PWD}"
+rm -rf build.d
+mv "${TEMP_DIR}" build.d
+find build.d
+
